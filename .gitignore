@@ -1,0 +1,16 @@
+# Python
+*.py[cod]
+*.class
+__pycache__/
+*.so
+
+# Virtual Environment
+venv/
+
+# Django
+*.log
+db.sqlite3
+
+# Environment variables
+.env
+.env.local
