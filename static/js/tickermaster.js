@@ -1,5 +1,3 @@
-const API_KEY = "" // Your API KEY Here
-
 $('#search-button').click(function () {
   // Default to ensure buttons are hidden
   $('#city-empty-alert').addClass('d-none');
@@ -9,7 +7,7 @@ $('#search-button').click(function () {
   let cityValue = $('#cityInput').val().trim()
   let genreValue = $('#classificationInput').val().trim()
 
-  // Check if fields are empty, if show alerts 
+  // Check if fields are empty, if show alerts
   if (cityValue === '') {
     $('#city-empty-alert').removeClass('d-none');
   }
@@ -23,17 +21,15 @@ $('#search-button').click(function () {
     console.log('Search for:', genreValue, 'in', cityValue);
     $.ajax({
       type: "GET",
-      url: "https://app.ticketmaster.com/discovery/v2/events.json",
+      url: "/api/search-events/",  // Django backend endpoint
       data: {
-        apikey: API_KEY,
         classificationName: genreValue,
-        city: cityValue,
-        sort: "date,asc"
+        city: cityValue
       },
       dataType: "json",
       success: function (json) {
         console.log("API Response:", json);
-        //Clear div before adding data 
+        //Clear div before adding data
         $('#results').empty();
 
         // Check if events were found

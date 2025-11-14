@@ -1,61 +1,43 @@
-{% load static %}
-<!DOCTYPE HTML>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Event Hub</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
-
-<body>
-  <div class="container-fluid text-center bg-dark text-white p-2" id="search-area">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
-        <h1 class="display-4">Ticketmaster</h1>
-        <h3 class="fw-bold">Quickly find tickets around you</h3>
-        <form>
-          <div class="input-group mb-3">
-            <input class="form-control" list="classificationOptions" id="classificationInput"
-              placeholder="Type to search by genre">
-            <datalist id="classificationOptions">
-              <option value="Music">
-              <option value="Sports">
-              <option value="Theater">
-              <option value="Family">
-              <option value="Arts & Theater">
-              <option value="Concerts">
-              <option value="Comedy">
-              <option value="Dance">
-            </datalist>
-            <input type="text" class="form-control" id="cityInput" placeholder="Enter a city e.g., Hartford">
-            <button id="search-button" type="button" class="btn btn-primary">SEARCH</button>
-          </div>
-        </form>
-        <div id="city-empty-alert" class="d-none alert alert-danger" role="alert">
-          City cannot be empty. Please enter a city.
+{% block content %}
+<div class="container-fluid text-center bg-dark text-white p-2" id="search-area">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <h1 class="display-4">Ticketmaster</h1>
+      <h3 class="fw-bold">Quickly find tickets around you</h3>
+      <form>
+        <div class="input-group mb-3">
+          <input class="form-control" list="classificationOptions" id="classificationInput"
+            placeholder="Type to search by genre">
+          <datalist id="classificationOptions">
+            <option value="Music">
+            <option value="Sports">
+            <option value="Theater">
+            <option value="Family">
+            <option value="Arts & Theater">
+            <option value="Concerts">
+            <option value="Comedy">
+            <option value="Dance">
+          </datalist>
+          <input type="text" class="form-control" id="cityInput" placeholder="Enter a city e.g., Hartford">
+          <button id="search-button" type="button" class="btn btn-primary">SEARCH</button>
         </div>
-        <div id="genre-empty-alert" class="d-none alert alert-danger" role="alert">
-          Search cannot be empty. Please enter a search term.
-        </div>
+      </form>
+      <div id="city-empty-alert" class="d-none alert alert-danger" role="alert">
+        City cannot be empty. Please enter a city.
+      </div>
+      <div id="genre-empty-alert" class="d-none alert alert-danger" role="alert">
+        Search cannot be empty. Please enter a search term.
       </div>
     </div>
   </div>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-10 col-lg-8">
-        <div id="results" class="bg-white shadow rounded p-2 m-4 d-none"></div>
-      </div>
+</div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div id="results" class="bg-white shadow rounded p-2 m-4 d-none"></div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="{% static 'js/tickermaster.js' %}"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}

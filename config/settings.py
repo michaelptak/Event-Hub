@@ -126,3 +126,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Ticketmaster API Configuration
+import os
+TICKETMASTER_API_KEY = os.environ.get('TICKETMASTER_API_KEY', '')
