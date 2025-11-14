@@ -6,10 +6,11 @@
     <div class="col-12 col-md-8 col-lg-6">
       <h1 class="display-4">Ticketmaster</h1>
       <h3 class="fw-bold">Quickly find tickets around you</h3>
-      <form>
+      <form method="GET" action="{% url 'index' %}">
         <div class="input-group mb-3">
-          <input class="form-control" list="classificationOptions" id="classificationInput"
-            placeholder="Type to search by genre">
+          <input class="form-control" list="classificationOptions" name="classificationName"
+            id="classificationInput" placeholder="Type to search by genre"
+            value="{{ request.GET.classificationName }}" required>
           <datalist id="classificationOptions">
             <option value="Music">
             <option value="Sports">
@@ -20,23 +21,31 @@
             <option value="Comedy">
             <option value="Dance">
           </datalist>
-          <input type="text" class="form-control" id="cityInput" placeholder="Enter a city e.g., Hartford">
-          <button id="search-button" type="button" class="btn btn-primary">SEARCH</button>
+          <input type="text" class="form-control" name="city" id="cityInput"
+            placeholder="Enter a city e.g., Hartford" value="{{ request.GET.city }}" required>
+          <button type="submit" class="btn btn-primary">SEARCH</button>
         </div>
       </form>
-      <div id="city-empty-alert" class="d-none alert alert-danger" role="alert">
-        City cannot be empty. Please enter a city.
-      </div>
-      <div id="genre-empty-alert" class="d-none alert alert-danger" role="alert">
-        Search cannot be empty. Please enter a search term.
-      </div>
     </div>
   </div>
 </div>
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-12 col-md-10 col-lg-8">
-      <div id="results" class="bg-white shadow rounded p-2 m-4 d-none"></div>
+      {% if search_performed %}
+        <div id="results" class="bg-white shadow rounded p-2 m-4">
+          {% if events %}
+            <p>{{ event_count }} event{{ event_count|pluralize }} found</p>
+
+            {% for event in events %}
+              {% include '_event_card.html' with event=event %}
+            {% endfor %}
+
+          {% else %}
+            <p>Sorry... No results were found for the entered search term and city.</p>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>

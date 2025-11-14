@@ -1,33 +1,66 @@
 from django.shortcuts import render
-from django.http import JsonResponse
 from django.conf import settings
 import requests
+from datetime import datetime
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    # Initialize variables that will be passed to the template
+    processed_events = []
+    search_performed = False
 
-def search_events(request):
-    # Check if the request method is GET
-    if request.method == 'GET':
-        # Get the search parameters from query string
-        classification_name = request.GET.get('classificationName')
-        city = request.GET.get('city')
+    # Check if the user submitted a search by looking for query parameters
+    classification_name = request.GET.get('classificationName')
+    city = request.GET.get('city')
 
-        # Validate that both parameters are provided
-        if not classification_name or not city:
-            return JsonResponse({'error': 'Both classification name and city are required fields.'},status=400)
+    # If both search parameters are provided, perform search
+    if classification_name and city:
+        search_performed = True
 
-        # Call the helper function to fetch events from Ticketmaster API
-        events_data = get_ticketmaster_events(classification_name, city)
+        # Fetch events from Ticketmaster API
+        raw_events_data = get_ticketmaster_events(classification_name, city)
 
-        # If the API request failed or returned None
-        if events_data is None:
-            return JsonResponse({'error': 'The server encountered an issue while fetching data. Please try again later.'}, status=500)
+        # Process the events if data was returned successfully
+        if raw_events_data and raw_events_data.get('_embedded') and raw_events_data['_embedded'].get('events'):
+            raw_events_list = raw_events_data['_embedded']['events']
 
-        # Return the events data as JSON
-        return JsonResponse(events_data, safe=False)
+            # Extract and format data from each event
+            for event in raw_events_list:
+                try:
+                    # Parse datetime from ISO format
+                    event_datetime_str = event['dates']['start']['dateTime']
+                    event_datetime = datetime.fromisoformat(event_datetime_str.replace('Z', '+00:00'))
 
+                    # Create simplified event dictionary matching model and cartd fields
+                    processed_event = {
+                        'event_id': event['id'],
+                        'name': event['name'],
+                        'image': event['images'][0]['url'],
+                        'datetime': event_datetime, # Unformatted date time object for DB
+                        'formatted_date': event_datetime.strftime('%a %b %d %Y'),
+                        'formatted_time': event_datetime.strftime('%I:%M:%S %p'),
+                        'url': event['url'],
+                        'venue_name': event['_embedded']['venues'][0]['name'],
+                        'venue_address': event['_embedded']['venues'][0]['address']['line1'],
+                        'venue_city': event['_embedded']['venues'][0]['city']['name'],
+                        'venue_state': event['_embedded']['venues'][0]['state']['name'],
+                    }
+
+                    processed_events.append(processed_event)
+
+                except (KeyError, IndexError, ValueError):
+                    # Skip events with missing or invalid data
+                    continue
+
+    # Create context dictionary with all data to pass to the template
+    context = {
+        'events': processed_events,
+        'event_count': len(processed_events),
+        'search_performed': search_performed,
+    }
+
+    # Render the template with context data
+    return render(request, 'index.html', context)
 
 def get_ticketmaster_events(classification_name, city):
     try:
