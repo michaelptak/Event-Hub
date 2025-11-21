@@ -1,9 +1,33 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.conf import settings
 import requests
 from datetime import datetime
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 # Create your views here.
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('index')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'registration/login.html', {'form':form})
+
 def index(request):
     # Initialize variables that will be passed to the template
     processed_events = []

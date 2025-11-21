@@ -62,7 +62,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,3 +135,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Ticketmaster API Configuration
 import os
 TICKETMASTER_API_KEY = os.environ.get('TICKETMASTER_API_KEY', '')
+
+# User Authentication
+LOGIN_REDIRECT_URL = 'index'
