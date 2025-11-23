@@ -1,0 +1,38 @@
+<div class="card mb-3">
+  <div class="row g-0 align-items-center">
+    <div class="col-sm-4">
+      <img class="card-img rounded p-2" src="{{ event.image }}" alt="{{ event.name }}">
+    </div>
+    <div class="col-sm-8">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-8">
+            <h3 class="card-title mb-4">{{ event.name }}</h3>
+            <h5 class="card-text text-secondary fw-bold mb-1">
+              <i class="bi bi-geo-alt"></i> {{ event.venue_name }}
+            </h5>
+            <p class="card-text text-secondary mb-1">{{ event.venue_address }}</p>
+            <p class="card-text text-secondary mb-1">{{ event.venue_city }}, {{ event.venue_state }}</p>
+          </div>
+          <div class="col-4 text-end">
+            <p class="card-text text-primary-emphasis mb-1 fw-bold">{{ event.formatted_date }}</p>
+            <p class="card-text text-primary-emphasis mb-1">{{ event.formatted_time }}</p>
+            {% if event.price_range != "Price not available" %}
+              <p class="card-text text-success fw-bold mb-3">{{ event.price_range }}</p>
+            {% else %}
+              <p class="mb-3"></p>
+            {% endif %}
+
+            {% block card_actions %}
+            {# Child templates will override this block with specific buttons #}
+            {% endblock %}
+          </div>
+        </div>
+
+        {% block extra_info %}
+        {# Child templates can add additional info here (ratings, notes, etc.) #}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

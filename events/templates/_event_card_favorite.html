@@ -1,0 +1,11 @@
+{% extends "_event_card_base.html" %}
+
+{% block card_actions %}
+  <a href="{{ event.url }}" target="_blank" class="btn btn-outline-primary">
+    <i class="bi bi-ticket-perforated"></i> Find tickets
+  </a>
+{% endblock %}
+
+{% block extra_info %}
+  {# Future: Add ratings, personal notes, etc. here #}
+{% endblock %}

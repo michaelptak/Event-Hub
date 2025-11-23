@@ -1,14 +1,85 @@
 from django.shortcuts import redirect, render
 from django.conf import settings
 import requests
+import json
 from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_POST
+from .models import FavoriteEvent
 
 # Create your views here.
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+@login_required
+def favorites_view(request):
+    # Get all favorites for the current user
+    favorite_events = FavoriteEvent.objects.filter(user=request.user)
+
+    # Transform FavoriteEvent objects into the same format as search results
+    processed_events = []
+    for fav in favorite_events:
+        processed_event = {
+            'event_id': fav.event_id,
+            'name': fav.event_name,
+            'image': fav.event_image,
+            'datetime': fav.event_datetime,
+            'formatted_date': fav.event_datetime.strftime('%a %b %d %Y'),
+            'formatted_time': fav.event_datetime.strftime('%I:%M:%S %p'),
+            'url': fav.event_url,
+            'venue_name': fav.venue_name,
+            'venue_address': fav.venue_address,
+            'venue_city': fav.venue_city,
+            'venue_state': fav.venue_state,
+            'price_range': fav.price_range or "Price not available",
+        }
+        processed_events.append(processed_event)
+
+    context = {
+        'events': processed_events,
+        'event_count': len(processed_events),
+    }
+
+    return render(request, 'favorites.html', context)
+
+@login_required
+def add_to_favorites(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        # Parse the JSON data from the request 
+        data = json.load(request)
+        event = data.get('payload')
+
+        # Try to create, but handle duplicate case
+        favorite, created = FavoriteEvent.objects.get_or_create(
+            user=request.user,
+            event_id=event['event_id'],
+            defaults={
+                'event_name': event['name'],
+                'event_url': event['url'],
+                'event_image': event['image'],
+                'event_datetime': event['datetime'],
+                'venue_name': event['venue_name'],
+                'venue_address': event['venue_address'],
+                'venue_city': event['venue_city'],
+                'venue_state': event['venue_state'],
+                'price_range': event['price_range'],
+            }
+        )
+
+        if created:
+            return JsonResponse({'status': 'success', 'message': 'Added to favorites!'})
+        else:
+            return JsonResponse({'status': 'already_exists', 'message': 'Already favorited!'})
+    else:
+        return HttpResponseBadRequest('Invalid request')
+
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -99,6 +170,17 @@ def index(request):
                 except (KeyError, IndexError, ValueError):
                     # Skip events with missing or invalid data
                     continue
+
+    # Check which events are already favorited by the current user
+    if request.user.is_authenticated:
+        favorited_event_ids = set(
+            FavoriteEvent.objects.filter(user=request.user).values_list('event_id', flat=True)
+        )
+        for event in processed_events:
+            event['is_favorited'] = event['event_id'] in favorited_event_ids
+    else:
+        for event in processed_events:
+            event['is_favorited'] = False
 
     # Create context dictionary with all data to pass to the template
     context = {

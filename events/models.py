@@ -16,7 +16,6 @@ class FavoriteEvent(models.Model):
 
     # Date and time information
     event_datetime = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
 
     # Venue information
     venue_name = models.CharField(max_length=500)
@@ -24,8 +23,12 @@ class FavoriteEvent(models.Model):
     venue_city = models.CharField(max_length=200)
     venue_state = models.CharField(max_length=200)
 
+    # Price information
+    price_range = models.CharField(max_length=200, blank=True, null=True)
+
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         # Ensure a user can't favorite the same event twice

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container-fluid text-center bg-dark text-white p-2" id="search-area">
@@ -38,7 +39,7 @@
             <p>{{ event_count }} event{{ event_count|pluralize }} found</p>
 
             {% for event in events %}
-              {% include '_event_card.html' with event=event %}
+              {% include '_event_card_search.html' with event=event %}
             {% endfor %}
 
           {% else %}
@@ -49,4 +50,8 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/favorites.js' %}"></script>
 {% endblock %}

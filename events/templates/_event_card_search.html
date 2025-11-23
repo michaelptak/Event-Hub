@@ -1,0 +1,29 @@
+{% extends "_event_card_base.html" %}
+
+{% block card_actions %}
+  <a href="{{ event.url }}" target="_blank" class="btn btn-outline-primary mb-2">
+    <i class="bi bi-ticket-perforated"></i> Find tickets
+  </a>
+
+  {% if user.is_authenticated %}
+    {% if event.is_favorited %}
+      <button class="btn btn-success w-100 favorite-btn" disabled data-event-id="{{ event.event_id }}">
+        <i class="bi bi-check-circle"></i> Favorited
+      </button>
+    {% else %}
+      <button class="btn btn-outline-secondary w-100 favorite-btn"
+              data-event-id="{{ event.event_id }}"
+              data-event-name="{{ event.name }}"
+              data-event-url="{{ event.url }}"
+              data-event-image="{{ event.image }}"
+              data-event-datetime="{{ event.datetime|date:'c' }}"
+              data-venue-name="{{ event.venue_name }}"
+              data-venue-address="{{ event.venue_address }}"
+              data-venue-city="{{ event.venue_city }}"
+              data-venue-state="{{ event.venue_state }}"
+              data-price-range="{{ event.price_range }}">
+        <i class="bi bi-heart"></i> Add to Favorites
+      </button>
+    {% endif %}
+  {% endif %}
+{% endblock %}
