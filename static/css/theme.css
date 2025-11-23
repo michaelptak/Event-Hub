@@ -68,8 +68,8 @@ body {
 
 /* Search header */
 #search-area {
-  background-color: var(--search-header-bg);
-  color: var(--search-header-text);
+  background-color: var(--search-header-bg) !important;
+  color: var(--search-header-text) !important;
 }
 
 /* Cards */
@@ -147,7 +147,7 @@ body {
 
 /* Results container */
 #results {
-  background-color: var(--card-bg);
+  background-color: var(--card-bg) !important;
   border-color: var(--card-border);
 }
 
