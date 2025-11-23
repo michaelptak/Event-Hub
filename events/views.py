@@ -2,15 +2,20 @@ from django.shortcuts import redirect, render
 from django.conf import settings
 import requests
 from datetime import datetime
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 # Create your views here.
+def logout_view(request):
+    logout(request)
+    return redirect('index')
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             return redirect('index')
     else:
         form = UserCreationForm()
@@ -55,6 +60,24 @@ def index(request):
                     event_datetime_str = event['dates']['start']['dateTime']
                     event_datetime = datetime.fromisoformat(event_datetime_str.replace('Z', '+00:00'))
 
+                    # Extract price range if available
+                    if 'priceRanges' in event and len(event['priceRanges']) > 0:
+                        price_min = event['priceRanges'][0].get('min')
+                        price_max = event['priceRanges'][0].get('max')
+                        currency = event['priceRanges'][0].get('currency', 'USD')
+
+                        if price_min and price_max:
+                            if price_min == price_max:
+                                price_range = f"${price_min:.2f}"
+                            else:
+                                price_range = f"${price_min:.2f} - ${price_max:.2f}"
+                        elif price_min:
+                            price_range = f"From ${price_min:.2f}"
+                        else:
+                            price_range = "Price not available"
+                    else:
+                        price_range = "Price not available"
+
                     # Create simplified event dictionary matching model and cartd fields
                     processed_event = {
                         'event_id': event['id'],
@@ -68,6 +91,7 @@ def index(request):
                         'venue_address': event['_embedded']['venues'][0]['address']['line1'],
                         'venue_city': event['_embedded']['venues'][0]['city']['name'],
                         'venue_state': event['_embedded']['venues'][0]['state']['name'],
+                        'price_range': price_range,
                     }
 
                     processed_events.append(processed_event)

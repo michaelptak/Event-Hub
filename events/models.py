@@ -16,6 +16,7 @@ class FavoriteEvent(models.Model):
 
     # Date and time information
     event_datetime = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # Venue information
     venue_name = models.CharField(max_length=500)

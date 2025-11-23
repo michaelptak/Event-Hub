@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third Party
+    'crispy_forms',
+    'crispy_bootstrap5',
 
     # Local Apps 
     'events',
@@ -138,3 +141,8 @@ TICKETMASTER_API_KEY = os.environ.get('TICKETMASTER_API_KEY', '')
 
 # User Authentication
 LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+
+# Template Packs
+CRISPY_ALLOWED_TEMPLATE_PACKS = ["bootstrap5"]
+CRISPY_TEMPLATE_PACK = "bootstrap5"
