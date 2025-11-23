@@ -79,6 +79,19 @@ def add_to_favorites(request):
     else:
         return HttpResponseBadRequest('Invalid request')
 
+@login_required
+def remove_from_favorites(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        data = json.load(request)
+        event = data.get('payload')
+
+        FavoriteEvent.objects.filter(user=request.user, event_id=event['event_id']).delete()
+        return JsonResponse({'status': 'success', 'message': 'Removed from favorites!'})
+
+    else:
+        return HttpResponseBadRequest('Invalid request')
 
 
 def register_view(request):

@@ -62,3 +62,62 @@ $('.favorite-btn').click(function() {
     }
   });
 });
+
+// Handle "Remove from Favorites" button clicks
+let eventToRemove = null;
+
+$('.remove-favorite-btn').click(function() {
+  const button = $(this);
+
+  // Don't do anything if already disabled
+  if (button.prop('disabled')) {
+    return;
+  }
+
+  eventToRemove = button;
+
+  // Show the Bootstrap modal
+  $('#confirmDeleteModal').modal('show');
+});
+
+// Handle the actual deletion when user confirms
+$('#confirmDeleteBtn').click(function() {
+  if (!eventToRemove) return;
+
+  const button = eventToRemove;
+
+  // Get event data from button's data attributes
+  const buttonData = {
+    event_id: button.data('event-id'),
+  };
+
+  // Send AJAX request
+  $.ajax({
+    url: '/favorites/remove/',
+    type: 'POST',
+    dataType: 'json',
+    data: JSON.stringify({payload: buttonData}),
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+    success: function(data) {
+      if (data.status === 'success') {
+        const card = button.closest('.card');
+
+        $('#confirmDeleteModal').modal('hide');
+
+        card.fadeOut(300, function() {
+          location.reload();
+        });
+      }
+    },
+    error: function(error) {
+      console.error('Error removing from favorites:', error);
+      $('#confirmDeleteModal').modal('hide');
+      alert('Failed to remove from favorites. Please try again.');
+    }
+  });
+
+  eventToRemove = null;
+});
