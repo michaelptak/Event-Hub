@@ -3,11 +3,10 @@ from django.conf import settings
 import requests
 import json
 from datetime import datetime
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.http import JsonResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_POST
 from .models import FavoriteEvent
 
 # Create your views here.

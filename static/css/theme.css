@@ -1,0 +1,157 @@
+/* Light mode (default) */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #212529;
+  --navbar-bg: #f8f9fa;
+  --navbar-text: #212529;
+  --search-header-bg: #f8f9fa;
+  --search-header-text: #212529;
+  --card-bg: #ffffff;
+  --card-border: #dee2e6;
+  --input-bg: #ffffff;
+  --input-border: #ced4da;
+  --input-text: #212529;
+  --button-primary-bg: #0d6efd;
+  --button-primary-text: #ffffff;
+  --button-outline-border: #0d6efd;
+  --button-outline-text: #0d6efd;
+  --button-success-bg: #198754;
+  --button-danger-bg: #dc3545;
+  --muted-text: #6c757d;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --navbar-bg: #212529;
+  --navbar-text: #e0e0e0;
+  --search-header-bg: #2d2d2d;
+  --search-header-text: #e0e0e0;
+  --card-bg: #2d2d2d;
+  --card-border: #404040;
+  --input-bg: #3a3a3a;
+  --input-border: #555555;
+  --input-text: #e0e0e0;
+  --button-primary-bg: #0d6efd;
+  --button-primary-text: #ffffff;
+  --button-outline-border: #6ea8fe;
+  --button-outline-text: #6ea8fe;
+  --button-success-bg: #198754;
+  --button-danger-bg: #dc3545;
+  --muted-text: #adb5bd;
+}
+
+/* Apply variables to elements */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--navbar-bg) !important;
+  color: var(--navbar-text) !important;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar-text {
+  color: var(--navbar-text) !important;
+}
+
+.navbar .btn-link {
+  color: var(--navbar-text) !important;
+}
+
+/* Search header */
+#search-area {
+  background-color: var(--search-header-bg);
+  color: var(--search-header-text);
+}
+
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-color);
+}
+
+.card-body {
+  background-color: var(--card-bg);
+}
+
+.card-title,
+.card-text {
+  color: var(--text-color);
+}
+
+/* Form inputs */
+.form-control,
+.form-select {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--input-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--input-bg);
+  border-color: var(--button-outline-border);
+  color: var(--input-text);
+}
+
+/* Buttons - outline variants */
+.btn-outline-primary {
+  color: var(--button-outline-text);
+  border-color: var(--button-outline-border);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--button-primary-bg);
+  border-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+
+.btn-outline-secondary {
+  color: var(--muted-text);
+  border-color: var(--card-border);
+}
+
+.btn-outline-danger {
+  border-color: var(--button-danger-bg);
+  color: var(--button-danger-bg);
+}
+
+/* Muted text */
+.text-muted,
+.text-secondary {
+  color: var(--muted-text) !important;
+}
+
+/* Modal */
+.modal-content {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.modal-header {
+  border-bottom-color: var(--card-border);
+}
+
+.modal-footer {
+  border-top-color: var(--card-border);
+}
+
+/* Results container */
+#results {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+/* Dark mode switch icon color */
+#darkModeSwitch + label {
+  color: var(--navbar-text) !important;
+}
