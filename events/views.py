@@ -26,9 +26,8 @@ def favorites_view(request):
             'event_id': fav.event_id,
             'name': fav.event_name,
             'image': fav.event_image,
-            'datetime': fav.event_datetime,
-            'formatted_date': fav.event_datetime.strftime('%a %b %d %Y'),
-            'formatted_time': fav.event_datetime.strftime('%I:%M:%S %p'),
+            'formatted_date': fav.event_date or "Date TBD",
+            'formatted_time': fav.event_time or "Time TBD",
             'url': fav.event_url,
             'venue_name': fav.venue_name,
             'venue_address': fav.venue_address,
@@ -50,7 +49,7 @@ def add_to_favorites(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
-        # Parse the JSON data from the request 
+        # Parse the JSON data from the request
         data = json.load(request)
         event = data.get('payload')
 
@@ -62,7 +61,8 @@ def add_to_favorites(request):
                 'event_name': event['name'],
                 'event_url': event['url'],
                 'event_image': event['image'],
-                'event_datetime': event['datetime'],
+                'event_date': event.get('formatted_date'),
+                'event_time': event.get('formatted_time'),
                 'venue_name': event['venue_name'],
                 'venue_address': event['venue_address'],
                 'venue_city': event['venue_city'],
@@ -139,15 +139,28 @@ def index(request):
             # Extract and format data from each event
             for event in raw_events_list:
                 try:
-                    # Parse datetime from ISO format
-                    event_datetime_str = event['dates']['start']['dateTime']
-                    event_datetime = datetime.fromisoformat(event_datetime_str.replace('Z', '+00:00'))
+                    start_dates = event['dates']['start']
+
+                    # Parse local date
+                    local_date_str = start_dates.get('localDate')
+                    if local_date_str:
+                        local_date = datetime.strptime(local_date_str, '%Y-%m-%d')
+                        formatted_date = local_date.strftime('%a, %b %d, %Y')
+                    else:
+                        formatted_date = "Date TBD"
+
+                    # Parse local time
+                    local_time_str = start_dates.get('localTime')
+                    if local_time_str:
+                        local_time = datetime.strptime(local_time_str, '%H:%M:%S')
+                        formatted_time = local_time.strftime('%I:%M %p')
+                    else:
+                        formatted_time = "Time TBD"
 
                     # Extract price range if available
                     if 'priceRanges' in event and len(event['priceRanges']) > 0:
                         price_min = event['priceRanges'][0].get('min')
                         price_max = event['priceRanges'][0].get('max')
-                        currency = event['priceRanges'][0].get('currency', 'USD')
 
                         if price_min and price_max:
                             if price_min == price_max:
@@ -166,9 +179,8 @@ def index(request):
                         'event_id': event['id'],
                         'name': event['name'],
                         'image': event['images'][0]['url'],
-                        'datetime': event_datetime, # Unformatted date time object for DB
-                        'formatted_date': event_datetime.strftime('%a %b %d %Y'),
-                        'formatted_time': event_datetime.strftime('%I:%M:%S %p'),
+                        'formatted_date': formatted_date,
+                        'formatted_time': formatted_time,
                         'url': event['url'],
                         'venue_name': event['_embedded']['venues'][0]['name'],
                         'venue_address': event['_embedded']['venues'][0]['address']['line1'],

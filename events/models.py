@@ -15,7 +15,8 @@ class FavoriteEvent(models.Model):
     event_image = models.URLField(max_length=1000)
 
     # Date and time information
-    event_datetime = models.DateTimeField()
+    event_date = models.CharField(max_length=50, null=True)
+    event_time = models.CharField(max_length=20, null=True)
 
     # Venue information
     venue_name = models.CharField(max_length=500)
