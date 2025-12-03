@@ -27,6 +27,9 @@ class FavoriteEvent(models.Model):
     # Price information
     price_range = models.CharField(max_length=200, blank=True, null=True)
 
+    # User notes
+    notes = models.TextField(blank=True, null=True)
+
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)

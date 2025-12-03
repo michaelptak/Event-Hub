@@ -34,6 +34,7 @@ def favorites_view(request):
             'venue_city': fav.venue_city,
             'venue_state': fav.venue_state,
             'price_range': fav.price_range or "Price not available",
+            'notes': fav.notes or "",
         }
         processed_events.append(processed_event)
 
@@ -88,6 +89,26 @@ def remove_from_favorites(request):
 
         FavoriteEvent.objects.filter(user=request.user, event_id=event['event_id']).delete()
         return JsonResponse({'status': 'success', 'message': 'Removed from favorites!'})
+
+    else:
+        return HttpResponseBadRequest('Invalid request')
+
+@login_required
+def update_favorite_notes(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        data = json.load(request)
+        event_id = data.get('event_id')
+        notes = data.get('notes', '')
+
+        try:
+            favorite = FavoriteEvent.objects.get(user=request.user, event_id=event_id)
+            favorite.notes = notes
+            favorite.save()
+            return JsonResponse({'status': 'success', 'message': 'Notes updated!'})
+        except FavoriteEvent.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Favorite not found!'}, status=404)
 
     else:
         return HttpResponseBadRequest('Invalid request')

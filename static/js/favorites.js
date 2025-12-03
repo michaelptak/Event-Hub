@@ -122,3 +122,59 @@ $('#confirmDeleteBtn').click(function() {
 
   eventToRemove = null;
 });
+
+// Handle "Save Notes" button clicks
+$('.save-notes-btn').click(function() {
+  const button = $(this);
+  const eventId = button.data('event-id');
+  const notesField = $(`#notes-${eventId}`);
+  const notes = notesField.val();
+
+  // Disable button while saving
+  button.prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i>Saving...');
+
+  // Send AJAX request
+  $.ajax({
+    url: '/favorites/update-notes/',
+    type: 'POST',
+    dataType: 'json',
+    data: JSON.stringify({
+      event_id: eventId,
+      notes: notes
+    }),
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+    success: function(data) {
+      if (data.status === 'success') {
+        // Update button to show success state
+        button.removeClass('btn-success')
+              .addClass('btn-outline-success')
+              .html('<i class="bi bi-check-circle me-1"></i>Saved!');
+
+        // Reset button after 2 seconds
+        setTimeout(function() {
+          button.removeClass('btn-outline-success')
+                .addClass('btn-success')
+                .html('<i class="bi bi-check-lg me-1"></i>Save Notes')
+                .prop('disabled', false);
+        }, 2000);
+      }
+    },
+    error: function(error) {
+      console.error('Error saving notes:', error);
+      button.removeClass('btn-success')
+            .addClass('btn-danger')
+            .html('<i class="bi bi-x-circle me-1"></i>Failed')
+            .prop('disabled', false);
+
+      // Reset button after 2 seconds
+      setTimeout(function() {
+        button.removeClass('btn-danger')
+              .addClass('btn-success')
+              .html('<i class="bi bi-check-lg me-1"></i>Save Notes');
+      }, 2000);
+    }
+  });
+});
