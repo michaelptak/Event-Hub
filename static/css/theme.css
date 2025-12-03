@@ -103,6 +103,17 @@ body {
   color: var(--input-text);
 }
 
+/* Placeholder text */
+.form-control::placeholder {
+  color: var(--muted-text);
+  opacity: 0.7;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: #adb5bd;
+  opacity: 0.8;
+}
+
 /* Buttons - outline variants */
 .btn-outline-primary {
   color: var(--button-outline-text);
@@ -154,4 +165,9 @@ body {
 /* Dark mode switch icon color */
 #darkModeSwitch + label {
   color: var(--navbar-text) !important;
+}
+
+/* Navbar toggler (hamburger icon) - invert colors in dark mode */
+[data-theme="dark"] .navbar-toggler-icon {
+  filter: invert(1);
 }
