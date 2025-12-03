@@ -120,17 +120,37 @@ def index(request):
     # Initialize variables that will be passed to the template
     processed_events = []
     search_performed = False
+    error_message = None
 
     # Check if the user submitted a search by looking for query parameters
-    classification_name = request.GET.get('classificationName')
-    city = request.GET.get('city')
+    classification_name = request.GET.get('classificationName', '').strip()
+    city = request.GET.get('city', '').strip()
 
-    # If both search parameters are provided, perform search
+    # If both search parameters are provided, validate and perform search
     if classification_name and city:
         search_performed = True
 
-        # Fetch events from Ticketmaster API
-        raw_events_data = get_ticketmaster_events(classification_name, city)
+        # Server-side validation
+        valid_classifications = ['Music', 'Sports', 'Theater', 'Family', 'Arts & Theater', 'Concerts', 'Comedy', 'Dance']
+
+        # Validate classification name
+        if classification_name not in valid_classifications:
+            error_message = "Invalid genre selected. Please choose from the provided options."
+        # Validate city (basic validation: alphanumeric, spaces, hyphens)
+        elif not city.replace(' ', '').replace('-', '').isalnum():
+            error_message = "Invalid city name. Please enter a valid city."
+        # Validate length
+        elif len(city) > 100:
+            error_message = "City name is too long."
+        elif len(classification_name) > 50:
+            error_message = "Genre name is too long."
+
+        # Only fetch events if validation passed
+        if not error_message:
+            # Fetch events from Ticketmaster API
+            raw_events_data = get_ticketmaster_events(classification_name, city)
+        else:
+            raw_events_data = None
 
         # Process the events if data was returned successfully
         if raw_events_data and raw_events_data.get('_embedded') and raw_events_data['_embedded'].get('events'):
@@ -214,6 +234,7 @@ def index(request):
         'events': processed_events,
         'event_count': len(processed_events),
         'search_performed': search_performed,
+        'error_message': error_message,
     }
 
     # Render the template with context data

@@ -33,6 +33,13 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-12 col-md-10 col-lg-8">
+      {% if error_message %}
+        <div class="alert alert-danger alert-dismissible fade show m-4" role="alert">
+          <strong>Error:</strong> {{ error_message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
+
       {% if search_performed %}
         <div id="results" class="bg-white shadow rounded p-2 m-4">
           {% if events %}
