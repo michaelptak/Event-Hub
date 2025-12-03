@@ -174,11 +174,14 @@ def index(request):
                     else:
                         price_range = "Price not available"
 
+                    # Get the best quality image
+                    best_image = get_best_quality_image(event.get('images', []))
+
                     # Create simplified event dictionary matching model and cartd fields
                     processed_event = {
                         'event_id': event['id'],
                         'name': event['name'],
-                        'image': event['images'][0]['url'],
+                        'image': best_image,
                         'formatted_date': formatted_date,
                         'formatted_time': formatted_time,
                         'url': event['url'],
@@ -215,6 +218,29 @@ def index(request):
 
     # Render the template with context data
     return render(request, 'index.html', context)
+
+def get_best_quality_image(images):
+    """
+    Select the highest quality image from a list of images based on dimensions.
+    Returns the URL of the image with the largest width * height.
+    If no images are available, returns None.
+    """
+    if not images:
+        return None
+
+    best_image = None
+    max_area = 0
+
+    for image in images:
+        width = image.get('width', 0)
+        height = image.get('height', 0)
+        area = width * height
+
+        if area > max_area:
+            max_area = area
+            best_image = image.get('url')
+
+    return best_image if best_image else (images[0].get('url') if images else None)
 
 def get_ticketmaster_events(classification_name, city):
     try:
