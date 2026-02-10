@@ -3,6 +3,7 @@ Full-stack event discovery web application built with Django using Ticketmaster 
 
 ## Live Demo
 **[View Live Site](https://event-hub-0yzz.onrender.com/)**
+
 *Note: Demo site may take up to 30-60 seconds to wake up on first visit*
 
 ## Features
@@ -25,11 +26,11 @@ Full-stack event discovery web application built with Django using Ticketmaster 
 ![Event Search](screenshots/search.png)
 *Search for events by keyword with results from Ticketmaster API*
 
-![Favorites Page](screenshots/favorites.png)
-*Authenticated users can save and manage favorite events*
-
 ![Dark Mode Toggle](screenshots/dark-mode.png)
 *Toggle between light and dark themes*
+
+![Favorites Page](screenshots/favorites.png)
+*Authenticated users can save and manage favorite events*
 
 ## Running Locally
 
