@@ -7,11 +7,13 @@
     <div class="col-12 col-md-8 col-lg-6">
       <h1 class="display-4">Event Hub</h1>
       <h3 class="fw-bold">Quickly find tickets around you</h3>
-      <form method="GET" action="{% url 'index' %}">
+      <form method="GET" action="{% url 'index' %}" id="searchForm">
         <div class="input-group mb-3">
+          <input type="text" class="form-control" name="keyword" id="keywordInput"
+            placeholder="Search artist, event, venue..." value="{{ request.GET.keyword }}">
           <input class="form-control" list="classificationOptions" name="classificationName"
-            id="classificationInput" placeholder="Type to search by genre"
-            value="{{ request.GET.classificationName }}" required>
+            id="classificationInput" placeholder="Genre (optional)"
+            value="{{ request.GET.classificationName }}">
           <datalist id="classificationOptions">
             <option value="Music">
             <option value="Sports">
@@ -23,7 +25,7 @@
             <option value="Dance">
           </datalist>
           <input type="text" class="form-control" name="city" id="cityInput"
-            placeholder="Enter a city e.g., Hartford" value="{{ request.GET.city }}" required>
+            placeholder="City (optional)" value="{{ request.GET.city }}">
           <button type="submit" class="btn btn-primary">SEARCH</button>
         </div>
       </form>
@@ -43,11 +45,41 @@
       {% if search_performed %}
         <div id="results" class="bg-white shadow rounded p-2 m-4">
           {% if events %}
-            <p>{{ event_count }} event{{ event_count|pluralize }} found</p>
+            {% if pagination %}
+              <p>Showing {{ event_count }} of {{ pagination.total_results }} event{{ pagination.total_results|pluralize }} found</p>
+            {% else %}
+              <p>{{ event_count }} event{{ event_count|pluralize }} found</p>
+            {% endif %}
 
             {% for event in events %}
               {% include '_event_card_search.html' with event=event %}
             {% endfor %}
+
+            {% if pagination and pagination.total_pages > 1 %}
+              <nav aria-label="Search results pages" class="mt-3 mb-2">
+                <ul class="pagination justify-content-center flex-wrap">
+                  <li class="page-item {% if not pagination.has_previous %}disabled{% endif %}">
+                    <a class="page-link" {% if pagination.has_previous %}href="?keyword={{ request.GET.keyword|urlencode }}&classificationName={{ request.GET.classificationName|urlencode }}&city={{ request.GET.city|urlencode }}&page={{ pagination.previous_page }}"{% endif %}>
+                      &laquo; Prev
+                    </a>
+                  </li>
+
+                  {% for p in pagination.page_range %}
+                    <li class="page-item {% if p == pagination.current_page %}active{% endif %}">
+                      <a class="page-link" href="?keyword={{ request.GET.keyword|urlencode }}&classificationName={{ request.GET.classificationName|urlencode }}&city={{ request.GET.city|urlencode }}&page={{ p }}">
+                        {{ p|add:1 }}
+                      </a>
+                    </li>
+                  {% endfor %}
+
+                  <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" {% if pagination.has_next %}href="?keyword={{ request.GET.keyword|urlencode }}&classificationName={{ request.GET.classificationName|urlencode }}&city={{ request.GET.city|urlencode }}&page={{ pagination.next_page }}"{% endif %}>
+                      Next &raquo;
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            {% endif %}
 
           {% else %}
             <p>Sorry... No results were found for the entered search term and city.</p>
@@ -61,4 +93,15 @@
 
 {% block scripts %}
   <script src="{% static 'js/favorites.js' %}"></script>
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+      var keyword = document.getElementById('keywordInput').value.trim();
+      var genre = document.getElementById('classificationInput').value.trim();
+      var city = document.getElementById('cityInput').value.trim();
+      if (!keyword && !genre && !city) {
+        e.preventDefault();
+        alert('Please fill in at least one search field.');
+      }
+    });
+  </script>
 {% endblock %}

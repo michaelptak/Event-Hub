@@ -169,6 +169,31 @@ textarea.form-control::placeholder {
   color: var(--navbar-text) !important;
 }
 
+/* Pagination */
+[data-theme="dark"] .page-link {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--button-outline-text);
+}
+
+[data-theme="dark"] .page-link:hover {
+  background-color: var(--input-bg);
+  border-color: var(--card-border);
+  color: var(--button-outline-text);
+}
+
+[data-theme="dark"] .page-item.active .page-link {
+  background-color: var(--button-primary-bg);
+  border-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+
+[data-theme="dark"] .page-item.disabled .page-link {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--muted-text);
+}
+
 /* Navbar toggler (hamburger icon) - invert colors in dark mode */
 [data-theme="dark"] .navbar-toggler-icon {
   filter: invert(1);

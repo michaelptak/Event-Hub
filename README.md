@@ -6,7 +6,7 @@ Full-stack event discovery web application built with Django using Ticketmaster 
 *Note: Free tier may take up to 30-60 seconds to wake up on first visit*
 
 ## Features
-- Event search using Ticketmaster API
+- Event search using Ticketmaster API. Search by artist, location, event type, etc.
 - User authentication (signup/login/logout)
 - Favorites system with AJAX operations
 - Dark mode toggle with localStorage persistence
@@ -15,7 +15,7 @@ Full-stack event discovery web application built with Django using Ticketmaster 
 ## Tech Stack
 - **Backend:** Django 4.2, Python
 - **Database:** PostgreSQL (production database), using Django ORM for database operations
-- **Frontend:** HTML/CSS, JavaScript (Vanilla + AJAX)
+- **Frontend:** HTML/CSS, JavaScript (via jQuery)
 - **Styling:** Bootstrap 5
 
 ## Running Locally
